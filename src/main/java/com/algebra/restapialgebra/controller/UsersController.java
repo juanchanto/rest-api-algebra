@@ -38,6 +38,7 @@ public class UsersController {
 
         userFromBD.setName(user.getName());
         userFromBD.setEmail(user.getEmail());
+        userFromBD.setPassword(user.getPassword());
 
         return userRepository.save(userFromBD);
     }
