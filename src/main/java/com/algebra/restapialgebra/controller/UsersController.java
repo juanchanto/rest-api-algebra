@@ -13,5 +13,43 @@ import java.util.List;
 @RequestMapping("/users")
 public class UsersController {
 
-    
+    @Autowired
+    private UserRepository userRepository;
+
+    public UsersController(UserRepository userRepository) { this.userRepository = userRepository;}
+
+    @GetMapping("")
+    List<User> index() { return userRepository.findAll();}
+
+    @GetMapping("/{id}")
+    User getUser(@PathVariable Long id){ return userRepository.findById(id).orElseThrow(RuntimeException::new);}
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("")
+    User create(@RequestBody User user){
+        return userRepository.save(user);
+    }
+
+    @PutMapping("{id}")
+    User update(@PathVariable Long id, @RequestBody User user){
+        User userFromBD = userRepository
+                .findById(id)
+                .orElseThrow(RuntimeException::new);
+
+        userFromBD.setName(user.getName());
+        userFromBD.setEmail(user.getEmail());
+
+        return userRepository.save(userFromBD);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("{id}")
+    void delete(@PathVariable Long id){
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(RuntimeException::new);
+
+        userRepository.delete(user);
+    }
+
 }
